@@ -1,31 +1,30 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    letter-spacing: normal;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  letter-spacing: normal;
 }
 
 h1 {
-    padding: 0 0 10px 0;
+  padding: 0 0 10px 0;
 }
 
-ol {
-    width: 400px;
-    margin-left: 30px;
-    counter-reset: item;
-    list-style-type: none;
+.header-container ol {
+  width: 400px;
+  margin-left: 30px;
+  counter-reset: item;
+  list-style-type: none;
 }
 
 .wtree li {
-    list-style-type: none;
-    margin: 10px 0 10px 10px;
-    position: relative;
+  list-style-type: none;
+  margin: 10px 0 10px 10px;
+  position: relative;
 }
-
 
 /* .wtree li:before {
     content: "";
@@ -37,7 +36,6 @@ ol {
     width: 30px;
     height: 15px;
 } */
-
 
 /* .wtree li:after {
     position: absolute;
@@ -51,17 +49,16 @@ ol {
 } */
 
 .wtree li:last-child:after {
-    display: none;
+  display: none;
 }
 
 .wtree li span {
-    display: flex;
-    border: 1px solid #ddd;
-    padding: 10px;
-    color: rgba(102, 102, 102, 1);
-    text-decoration: none;
+  display: flex;
+  border: 1px solid #ddd;
+  padding: 10px;
+  color: rgba(102, 102, 102, 1);
+  text-decoration: none;
 }
-
 
 /* .wtree li span:hover,
 .wtree li span:focus {
@@ -75,41 +72,41 @@ ol {
     border: 1px solid #474747;
 } */
 
-.wtree li span:hover+ol li:after,
-.wtree li span:focus+ol li:after,
-.wtree li span:hover+ol li:before,
-.wtree li span:focus+ol li:before {
-    border-color: #474747;
+.wtree li span:hover + ol li:after,
+.wtree li span:focus + ol li:after,
+.wtree li span:hover + ol li:before,
+.wtree li span:focus + ol li:before {
+  border-color: #474747;
 }
 
-li span {
-    background-color: #ddf3fe;
+.li_flex li span {
+  background-color: #ddf3fe;
 }
 
-li li span {
-    background-color: #ddebc8;
+.li_flex li li span {
+  background-color: #ddebc8;
 }
 
-li li li span {
-    background-color: #fefcd5;
+.li_flex li li li span {
+  background-color: #fefcd5;
 }
 
 .display {
-    margin-right: 12px;
-    font-weight: bold;
+  margin-right: 12px;
+  font-weight: bold;
 }
 
 input,
 label {
-    margin: 12px 0px 20px 0px;
+  margin: 12px 0px 20px 0px;
 }
 
 label {
-    padding-left: 6px;
-    padding-right: 12px;
+  padding-left: 6px;
+  padding-right: 12px;
 }
 
 .li_flex {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
