@@ -1,0 +1,118 @@
+{
+    "urn": "dqic:permission:4e850cce-145d-4e42-af95-30857e9d3df2",
+    "type": 3,
+    "name": "Maths",
+    "childNodes": [{
+        "urn": "dqic:permission:65e01ee3-af88-46eb-9cd3-9ca919355a6b",
+        "productUrn": "dqic:permission:4e850cce-145d-4e42-af95-30857e9d3df2",
+        "type": 3,
+        "name": "Maths",
+        "ParentNode": true,
+        "childNodes": [{
+            "urn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+            "variantUrn": "dqic:permission:65e01ee3-af88-46eb-9cd3-9ca919355a6b",
+            "type": 3,
+            "name": "Variant",
+            "ParentNode": false,
+            "childNodes": [{
+                "urn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                "courseUrn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+                "type": 3,
+                "name": "UNIT I",
+                "ParentNode": false,
+                "childNodes": [{
+                    "urn": "dqic:permission:e9c6ab5f-aa4d-443f-ad16-cad2bb7c6f2e",
+                    "unitUrn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                    "type": 3,
+                    "name": "LESSON I",
+                    "ParentNode": false,
+                    "childNodes": []
+                }, {
+                    "urn": "629025415367abcfc6bef317",
+                    "unitUrn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                    "type": 5,
+                    "name": "LESSON II",
+                    "ParentNode": false,
+                    "childNodes": []
+                }, {
+                    "urn": "629025625367abcfc6bf189e",
+                    "unitUrn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                    "type": 7,
+                    "name": "LESSON III",
+                    "ParentNode": false,
+                    "childNodes": []
+                }]
+            }, {
+                "urn": "629026cc5367abcfc6c0ba6b",
+                "courseUrn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+                "type": 3,
+                "name": "UNIT II",
+                "ParentNode": false,
+                "childNodes": []
+            }, {
+                "urn": "629026e35367abcfc6c0d419",
+                "courseUrn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+                "type": 3,
+                "name": "UNIT II",
+                "ParentNode": false,
+                "childNodes": []
+            }]
+        }]
+    }, {
+        "urn": "dqic:permission:65e01ee3-af88-46eb-9cd3-9ca919355a6b",
+        "productUrn": "dqic:permission:4e850cce-145d-4e42-af95-30857e9d3df2",
+        "type": 3,
+        "name": "Science",
+        "ParentNode": true,
+        "childNodes": [{
+            "urn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+            "variantUrn": "dqic:permission:65e01ee3-af88-46eb-9cd3-9ca919355a6b",
+            "type": 3,
+            "name": "Variant",
+            "ParentNode": false,
+            "childNodes": [{
+                "urn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                "courseUrn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+                "type": 3,
+                "name": "UNIT I",
+                "ParentNode": false,
+                "childNodes": [{
+                    "urn": "dqic:permission:e9c6ab5f-aa4d-443f-ad16-cad2bb7c6f2e",
+                    "unitUrn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                    "type": 3,
+                    "name": "LESSON I",
+                    "ParentNode": false,
+                    "childNodes": []
+                }, {
+                    "urn": "629025415367abcfc6bef317",
+                    "unitUrn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                    "type": 5,
+                    "name": "LESSON II",
+                    "ParentNode": false,
+                    "childNodes": []
+                }, {
+                    "urn": "629025625367abcfc6bf189e",
+                    "unitUrn": "dqic:permission:20b06ded-15cd-4d58-a411-1299a1dae2ee",
+                    "type": 7,
+                    "name": "LESSON III",
+                    "ParentNode": false,
+                    "childNodes": []
+                }]
+            }, {
+                "urn": "629026cc5367abcfc6c0ba6b",
+                "courseUrn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+                "type": 3,
+                "name": "UNIT II",
+                "ParentNode": false,
+                "childNodes": []
+            }, {
+                "urn": "629026e35367abcfc6c0d419",
+                "courseUrn": "dqic:permission:5212335b-14c8-4a0b-8443-b3145e95246d",
+                "type": 3,
+                "name": "UNIT II",
+                "ParentNode": false,
+                "childNodes": []
+            }]
+        }]
+    }]
+}
