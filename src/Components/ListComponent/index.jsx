@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.css';
 import Box from '@material-ui/core/Box';
-import Toolbar from '@material-ui/core/Toolbar';
+import {Link} from 'react-router-dom';
 
 export default function ListComponent(props) {
   // let dragged;
@@ -51,28 +51,32 @@ export default function ListComponent(props) {
                 <li key={`${el.urn}_${el.name}`} id={el.urn} className='li_flex'>
                   <span>
                     {el.name}
-                    <i
-                      className='fa fa-plus'
-                      style={{ marginLeft: 'auto' }}
-                      onClick={() => props.addProduct('data')}
-                    ></i>
+                    {el.type!=='LESSON'&&<i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer" }}
+                    onClick={() => {props.addDataToList(el.type,props.indexOfList,el)}}></i>}
                   </span>
                   <ListComponent
                     key={i}
                     list={el.childNodes}
                     first={false}
-                    addProduct={props.addProduct}
+                    indexOfList={el.type===1?i:props.indexOfList}
+                    addDataToList={props.addDataToList}
                   />
                 </li>
               );
             }
             return (
-              <li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'>
+              el.type!=='LESSON'?<li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+              >
                 <span>
                   {el.name}
-                  <i className='fa fa-plus' style={{ marginLeft: 'auto' }}></i>
+                  <i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer"}} onClick={() => {props.addDataToList(el.type,props.indexOfList,el)}}></i>
                 </span>
-              </li>
+              </li>:<Link to={`/section/${el.urn}`}><li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+              >
+                <span>
+                  {el.name}
+                </span>
+              </li></Link>
             );
           })}
       </ol>
