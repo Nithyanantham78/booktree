@@ -62,6 +62,10 @@
   border-color: #474747;
 }
 
+.wtree a{
+  text-decoration: none;
+}
+
 .li_flex li span {
   background-color: #ddf3fe;
 }

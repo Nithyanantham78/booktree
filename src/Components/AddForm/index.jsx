@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -8,7 +8,10 @@ import Button from '@material-ui/core/Button';
 
 
 function AddForm(props) {
-  const [text, setText] = useState();
+  const [text, setText] = useState(props.text?props.text:'');
+  useEffect(()=>{
+    setText(props.text);
+  },[props.text])
   return <Grid item xs={6}>
     <Box sx={{ my: 3, mx: 2 }} style={{ padding: 20 }}>
               <Grid container alignItems='center'>
@@ -18,9 +21,6 @@ function AddForm(props) {
                   </Typography>
                 </Grid>
               </Grid>
-              <Typography color='text.secondary' variant='body2'>
-                {props.productName}
-              </Typography>
             </Box>
     <Divider variant='middle' />
     <Box>

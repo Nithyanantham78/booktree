@@ -1,9 +1,12 @@
 import React from 'react';
+import {useParams} from 'react-router-dom';
 import './index.css';
 import Box from '@material-ui/core/Box';
 import {Link} from 'react-router-dom';
 
 export default function ListComponent(props) {
+  let params = useParams();
+
   // let dragged;
   // let id;
   // let index;
@@ -51,27 +54,34 @@ export default function ListComponent(props) {
                 <li key={`${el.urn}_${el.name}`} id={el.urn} className='li_flex'>
                   <span>
                     {el.name}
-                    {el.type!=='LESSON'&&<i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer" }}
+                    {(el.type!=='LESSON' && el.type!=='RESOURCE')&&<i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer" }}
                     onClick={() => {props.addDataToList(el.type,props.indexOfList,el)}}></i>}
                   </span>
                   <ListComponent
-                    key={i}
+                    key={`${el.type}_${el.urn}_${new Date().getMilliseconds()}`}
                     list={el.childNodes}
                     first={false}
                     indexOfList={el.type===1?i:props.indexOfList}
                     addDataToList={props.addDataToList}
+                    fetchResource={props.fetchResource}
                   />
                 </li>
               );
             }
             return (
-              el.type!=='LESSON'?<li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+              (el.type!=='LESSON' && el.type!=='RESOURCE')?<li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
               >
                 <span>
                   {el.name}
                   <i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer"}} onClick={() => {props.addDataToList(el.type,props.indexOfList,el)}}></i>
                 </span>
-              </li>:<Link to={`/section/${el.urn}`}><li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+              </li>:el.type!=='RESOURCE'?<Link to={`/section/${el.urn}`}><li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+              >
+                <span>
+                  {el.name}
+                </span>
+              </li></Link>:<Link to={`/section/${params.sectionId}/${el.urn}`}><li key={`${el.type}_${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+              onClick={()=>{props.fetchResource(el)}}
               >
                 <span>
                   {el.name}

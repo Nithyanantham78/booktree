@@ -3,5 +3,6 @@ export const typeOfTree = {
     'VARIANT':'COURSE',
     'COURSE':'UNIT',
     'UNIT':'LESSON',
-    'LESSON':''
+    'LESSON':'',
+    'SECTION':'RESOURCE'
 }

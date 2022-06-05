@@ -1,80 +1,72 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
-import Toolbar from '@material-ui/core/Toolbar';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { ListContext } from '../../context/ListContext';
-import ListComponent from '../../Components/ListComponent';
 import AddForm from '../../Components/AddForm';
-import {typeOfTree} from '../../Config/config'
-import {urlConfig} from '../../Config/urlConfig'
-import './Dashboard.css';
+import LoadingSpinner from '../../Components/Loader';
+import { urlConfig } from '../../Config/urlConfig'
 
 function Dashboard() {
-  const [list, setList] = useContext(ListContext);
-  const [title,setTitle] = useState('Product');
-  const [selectedindex,setSelectedIndex] = useState(0);
-  const [selectedProduct,setSelectedProduct] = useState();
-  const [apiStatus,setApiStatus] = useState();
+    const [list, setList] = useState([]);
+    const [apiStatus, setApiStatus] = useState();
 
-  useEffect(() => {
+    useEffect(() => {
+        axios.post(urlConfig['getPaginatedProducts'], {
+            "pageSize": 10
+        }).then((res) => {
+            console.log()
+            setList(res.data.content)
+        })
+    }, []);
+ 
+    let submitForm = (data) => {
+        setApiStatus('Pending')
+        setList([]);
+        axios.post(urlConfig['Create']["PRODUCT"], {
+            "name": data,
+            "type": "PRODUCT"
+        }).then((res) => {
+            list.push(res.data);
+            setList([...list]);
+            setApiStatus('success');
+        })
 
-    axios.get(`http://author-service-lb-341934567.ap-southeast-1.elb.amazonaws.com/api/product/render-product/urn:product:be9eb3ab-e113-429e-9e3d-424182ae17c8`).then((res) => {
-      setList([res.data]);
-      console.log(res.data);
-    });
-  }, []);
-
-  let addDataToList = async (title,index,data) => {
-    setTitle(typeOfTree[title]);
-    setSelectedIndex(index);
-    setSelectedProduct(data);
-  }
-
-  let submitForm = (data) => {
-      axios.post(urlConfig[selectedProduct.type],{
-        name:data,
-        parentUrn:selectedProduct.urn            
-      }).then((res)=>{
-        let listing = list[selectedindex];
-        while(1){
-          if(listing.urn === selectedProduct.urn){
-            listing.childNodes.push(res.data);
-            break;
-          }else{
-            listing = listing.childNodes[0];
-          }
-        }
-        setList([...list]);
-        setApiStatus('success');        
-      })
-
-  }
+    }
 
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <div className='header-container'>Header</div>
-      <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            {list.length && (
-              <ListComponent
-                list={list}
-                first={'parent'}
-                addDataToList={addDataToList}
-                indexOfList={0}
-              >
-                <Toolbar />
-              </ListComponent>
-            )}
-          </Grid>
-          <AddForm title={title} productName={list[selectedindex]?list[selectedindex].name:''} formSubmit={submitForm} apiStatus={apiStatus}/>      
-        </Grid>
-      </Container>
-    </Box>
-  );
-}
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <div className='header-container'>Header</div>
+            <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+            <Link to={'/'}><button>Home</button></Link>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        {list.length ? (
+                            <Box>
+                            <ol className={`wtree`}>
+                              {list &&
+                               list.length &&
+                               list.map((el, i) => {
+                                  return (
+                                   <Link to={`/product/${el.urn}`}><li key={`${el.urn}_${new Date().getMilliseconds()}`} id={el.urn} className='li_flex'
+                                    >
+                                      <span>
+                                        {el.name}
+                                      </span>
+                                    </li></Link>
+                                  );
+                                })}
+                            </ol>
+                          </Box>
+                        ):apiStatus==='Pending'?<LoadingSpinner />:'No Data Found'}
+                    </Grid>
+                    <AddForm title={'PRODUCT'} formSubmit={submitForm} apiStatus={apiStatus} />
+                </Grid>
+            </Container>
+        </Box>
+    );
+};
 
-export default Dashboard;
+export default Dashboard
