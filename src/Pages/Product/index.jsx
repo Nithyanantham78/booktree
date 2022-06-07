@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import {useParams, useNavigate} from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
 
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,9 +17,8 @@ import './index.css';
 
 function Product() {
   let params = useParams();
-  let navigate = useNavigate();
   const [list, setList] = useContext(ListContext);
-  const [title,setTitle] = useState('Product');
+  const [title,setTitle] = useState('');
   const [selectedProduct,setSelectedProduct] = useState();
   const [apiStatus,setApiStatus] = useState('Pending');
 
@@ -30,6 +29,8 @@ function Product() {
     });
     return ()=>{
       setList([])
+      setTitle('')
+      setSelectedProduct('')
     }
   }, [params.productId]);
 
@@ -40,12 +41,16 @@ function Product() {
 
   let submitForm = async (data) => {
     setApiStatus('Pending')
-    setList([])
-      let res = await axios.post(urlConfig['Create'][title],{
-        "name":data,
-        "parentUrn":selectedProduct.urn,
-        "type": selectedProduct.type
-      });
+    setList([]);
+    let payload = {
+      "name":data.name,
+      "parentUrn":selectedProduct.urn,
+      "type": title
+    }
+    if(title==="LESSON"){
+      payload.status=data.lessonStatus
+    }
+      let res = await axios.post(urlConfig['Create'][title],payload);
       if(res){
       await axios.get(`/api/product/render-product/${params.productId}`).then((res) => {
           setList([res.data]);
@@ -58,7 +63,7 @@ function Product() {
   return (
     <Box sx={{ display: 'flex' }}>
       <div className='header-container'>Header</div>
-      <Button color='secondary' onClick={()=>{navigate(-1)}}>Back</Button>
+      <Link to={`/`}><Button color='secondary'>Home</Button></Link>
       <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -74,7 +79,7 @@ function Product() {
               </ListComponent>
             ):apiStatus==='Pending'?<LoadingSpinner />:'No Data Found'}
           </Grid>
-          <AddForm title={title} formSubmit={submitForm} apiStatus={apiStatus}/>      
+          {title&&<AddForm title={title} type={selectedProduct.type} formSubmit={submitForm} apiStatus={apiStatus}/>}      
         </Grid>
       </Container>
     </Box>

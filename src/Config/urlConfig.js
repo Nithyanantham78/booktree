@@ -1,5 +1,6 @@
 export let urlConfig = {
     "Create":{
+        "PRODUCT":`api/product`,
         "COURSE":`api/course/`,
         "VARIANT":`api/variant/`,
         "UNIT":`api/unit/`,

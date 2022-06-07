@@ -10,13 +10,12 @@ import { urlConfig } from '../../Config/urlConfig'
 
 function Dashboard() {
     const [list, setList] = useState([]);
-    const [apiStatus, setApiStatus] = useState();
+    const [apiStatus, setApiStatus] = useState('Pending');
 
     useEffect(() => {
         axios.post(urlConfig['getPaginatedProducts'], {
             "pageSize": 10
         }).then((res) => {
-            console.log()
             setList(res.data.content)
         })
     }, []);
@@ -25,22 +24,22 @@ function Dashboard() {
         setApiStatus('Pending')
         setList([]);
         axios.post(urlConfig['Create']["PRODUCT"], {
-            "name": data,
+            "name": data.name,
             "type": "PRODUCT"
         }).then((res) => {
             list.push(res.data);
             setList([...list]);
             setApiStatus('success');
+        }).catch((err)=>{
+            console.log(err);
         })
 
     }
-
 
     return (
         <Box sx={{ display: 'flex' }}>
             <div className='header-container'>Header</div>
             <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
-            <Link to={'/'}><button>Home</button></Link>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
                         {list.length ? (
@@ -62,7 +61,7 @@ function Dashboard() {
                           </Box>
                         ):apiStatus==='Pending'?<LoadingSpinner />:'No Data Found'}
                     </Grid>
-                    <AddForm title={'PRODUCT'} formSubmit={submitForm} apiStatus={apiStatus} />
+                    <AddForm title={'PRODUCT'} formSubmit={submitForm} type={"PRODUCT"} apiStatus={apiStatus} />
                 </Grid>
             </Container>
         </Box>
