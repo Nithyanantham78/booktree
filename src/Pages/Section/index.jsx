@@ -15,6 +15,7 @@ function Section() {
     let params = useParams();
     const [list, setList] = useState([]);
     const [title, setTitle] = useState('');
+    const [lessonStatus, setLessonStatus] = useState('');
     const [selectedProduct, setSelectedProduct] = useState({ urn: null });
     const [resource, setResource] = useState('');
     const [apiStatus, setApiStatus] = useState('Pending');
@@ -25,6 +26,7 @@ function Section() {
         axios.get(`api/lesson/${params.sectionId}`).then((res) => {
             setList(res.data.childNodes);
             setAuthorReferenceDto(res.data.authorReferenceDto);
+            setLessonStatus(res.data.status)
             setApiStatus('success');
         })
     }, [params.sectionId]);
@@ -32,7 +34,7 @@ function Section() {
     useEffect(() => {
         setText('')
     }, [selectedProduct.urn]);
-
+    
     let addDataToList = async (title, index, data) => {
         setResource('')
         setTitle(typeOfTree[title]);
@@ -56,8 +58,7 @@ function Section() {
     let submitForm = async (data, type) => {
         setApiStatus('Pending');
         if (type === "SECTION") {
-            setList([]);
-            let res = await axios.post(urlConfig['Create'][title], {
+            let payload = {
                 "name": data.name,
                 "new": true,
                 "parentUrn": selectedProduct.urn,
@@ -67,8 +68,10 @@ function Section() {
                 "content": {
                     "field1": data.name
                 }
-            })
-
+            }
+            setList([]);
+            let res = await axios.post(urlConfig['Create'][title], payload)
+            
             if (res) {
                 axios.get(`api/lesson/${params.sectionId}`).then((res) => {
                     setList(res.data.childNodes);
@@ -95,13 +98,19 @@ function Section() {
                 })
             }
         } else {
-            axios.patch(`${urlConfig['Create']["RESOURCE"]}/${resource.urn}`, {
+            let payload = {
                 "urn": resource.urn,
                 "persisted": true,
                 "content": {
                     "field1": data
                 }
-            }).then((res) => {
+            }
+            if(data.resourceType === 'QUESTION'){
+                payload["content"] = {};
+                payload["content"]["question"] = data.name;
+                payload["content"]["answers"] = data.answers;
+            }
+            axios.patch(`${urlConfig['Create']["RESOURCE"]}/${resource.urn}`, payload).then((res) => {
                 setApiStatus('success');
             }).catch(() => {
                 setApiStatus('Failed')
@@ -109,8 +118,11 @@ function Section() {
         }
     }
 
-    let changeLessonStatus = () => {
-
+    let changeLessonStatus = (status) => {
+        axios.patch(`http://author-service-lb-341934567.ap-southeast-1.elb.amazonaws.com/api/lesson/status/${status}`).then(()=>{
+            setApiStatus('success');
+            setLessonStatus(status);
+        })
     }
 
     return (
@@ -119,7 +131,7 @@ function Section() {
             <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
                 {authorReferenceDto && <Link to={`/product/${authorReferenceDto.productUrn}`}><Button color='secondary'>Back</Button></Link>}
                 <br />
-                <RenderLessonStatus currentStatus={'Verify'} changeLessonStatus={changeLessonStatus} />
+                <RenderLessonStatus currentStatus={lessonStatus} changeLessonStatus={changeLessonStatus} />
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
                         {list.length ? (
@@ -133,7 +145,7 @@ function Section() {
                             </ListComponent>
                         ) : apiStatus === 'Pending' ? <LoadingSpinner /> : 'No Data Found'}
                     </Grid>
-                    {(title || params.resourceId) && <AddForm title={title} formSubmit={submitForm} text={text} type={selectedProduct && selectedProduct.type} apiStatus={apiStatus} />}
+                    {(selectedProduct) && <AddForm title={title} formSubmit={submitForm} text={text} selectedProduct={selectedProduct} apiStatus={apiStatus} />}
                 </Grid>
             </Container>
         </Box>
@@ -144,13 +156,15 @@ export default Section
 
 
 function RenderLessonStatus({ currentStatus, changeLessonStatus }) {
-    if (currentStatus !== 'Draft') {
-        if (currentStatus === 'Review') {
-            return <><Button color='secondary' onClick={changeLessonStatus} defaultValue="Draft">Draft</Button> {currentStatus} <Button color='secondary' onClick={changeLessonStatus} defaultValue="Verify">Verify</Button></>
-        } else if (currentStatus === 'Verify') {
-            return <><Button color='secondary' onClick={changeLessonStatus} defaultValue="Draft">Draft</Button> {currentStatus} <Button color='secondary' onClick={changeLessonStatus} defaultValue="Pre">Pre</Button></>
-        } else if (currentStatus === 'Pre') {
-            return <><Button color='secondary' onClick={changeLessonStatus} defaultValue="Draft">Draft</Button> {currentStatus} <Button color='secondary' onClick={changeLessonStatus} defaultValue="Live">Live</Button></>
+    if (currentStatus !== 'DRAFT') {
+        if (currentStatus === 'REVIEW') {
+            return <><Button color='secondary' onClick={()=>changeLessonStatus('DRAFT')} defaultValue="DRAFT">DRAFT</Button> {currentStatus} <Button color='secondary' onClick={()=>changeLessonStatus('VERIFY')} defaultValue="VERIFY">VERIFY</Button></>
+        } else if (currentStatus === 'VERIFY') {
+            return <><Button color='secondary' onClick={()=>changeLessonStatus('DRAFT')} defaultValue="DRAFT">DRAFT</Button> {currentStatus} <Button color='secondary' onClick={()=>changeLessonStatus('PUB_READY')} defaultValue="PUB_READY">PUB_READY</Button></>
+        } else if (currentStatus === 'PUB_READY') {
+            return <><Button color='secondary' onClick={()=>changeLessonStatus('DRAFT')} defaultValue="DRAFT">DRAFT</Button> {currentStatus} <Button color='secondary' onClick={()=>changeLessonStatus('LIVE')} defaultValue="LIVE">LIVE</Button></>
         }
+    }else{
+        return <Button color="secondary" disabled="true">DRAFT</Button>
     }
 }

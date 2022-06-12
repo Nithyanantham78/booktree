@@ -79,7 +79,7 @@ function Product() {
               </ListComponent>
             ):apiStatus==='Pending'?<LoadingSpinner />:'No Data Found'}
           </Grid>
-          {title&&<AddForm title={title} type={selectedProduct.type} formSubmit={submitForm} apiStatus={apiStatus}/>}      
+          {title&&<AddForm title={title} selectedProduct={selectedProduct} formSubmit={submitForm} apiStatus={apiStatus}/>}      
         </Grid>
       </Container>
     </Box>

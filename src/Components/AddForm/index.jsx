@@ -12,14 +12,37 @@ function AddForm(props) {
   const [lessonStatus, setLessonStatus] = useState(1);
   const [resourceType, setResourceType] = useState('');
   const [textarea, setTextarea] = useState('');
-  const [inputs,setInputs] = useState({textField:['']});
+  const [inputs,setInputs] = useState({answers:[{'value':''}]});
   useEffect(() => {
     setText(props.text);
-  }, [props.text])
+    if(props.selectedProduct.resourceType){
+      setResourceType(props.selectedProduct.resourceType);
+    }
+    if(props.selectedProduct.resourceType === "Question" && props.selectedProduct.content && props.selectedProduct.content.answers){
+        setInputs({answers:[...props.selectedProduct.content.answers]})
+    }
+    return ()=>{
+      setText('');
+      setLessonStatus(1);
+      setResourceType('');
+      setInputs({answers:[{'value':''}]});
+    }
+  }, [props.text]) 
 
+
+  
   let addDynamic = (e) =>{
-    inputs.textField.push('');
+    inputs.answers.push({'value':''});
     setInputs({...inputs});
+  } 
+
+  let answers = (e,idx) =>{
+      for(let i=0;i<inputs.answers.length;i++){
+          if(idx == i){
+            inputs.answers[i].value=e.target.value;
+          }
+      }
+      setInputs({...inputs})
   }
 
   return <Grid item xs={6}>
@@ -27,7 +50,7 @@ function AddForm(props) {
       <Grid container alignItems='center'>
         <Grid item xs>
           <Typography gutterBottom variant='h4' component='div'>
-            {props.type==="RESOURCE"?'Update':'Add'} {props.title}
+            {props.selectedProduct.type==="RESOURCE"?'Update':'Add'} {props.title}
           </Typography>
         </Grid>
       </Grid>
@@ -36,17 +59,17 @@ function AddForm(props) {
     <Box>
       <Grid container spacing={2} style={{ padding: 20 }}>
         <Grid item xs={8}>
-          <TextField value={text}
+          {(!props.selectedProduct.resourceType || props.selectedProduct.resourceType !== "QUESTION")&&<TextField value={text}
             onChange={(event) => setText(event.target.value)}
-          />
-          {props.type === "UNIT" && <><br /><br /><select onChange={(e) => { setLessonStatus(e.target.value) }}>
-            <option>Draft</option>
-            <option>Review</option>
-            <option>Verify</option>
-            <option>Pre</option>
-            <option>Live</option>
+          />}
+          {props.selectedProduct.type === "UNIT" && <><br /><br /><select onChange={(e) => { setLessonStatus(e.target.value) }}>
+            <option>DRAFT</option>
+            <option>REVIEW</option>
+            <option>VERIFY</option>
+            <option>PUB_READY</option>
+            <option>LIVE</option>
           </select></>}
-          {props.type === "SECTION" && <> <br /><br />
+          {props.selectedProduct.type === "SECTION" && <> <br /><br />
             <select onChange={(e) => { setResourceType(e.target.value) }}>
             <option>INFO</option>
             <option>CONCEPT</option>
@@ -55,21 +78,18 @@ function AddForm(props) {
             <option>TIMER</option>
           </select></>}
          
-          {props.resourceType && props.resourceType === "QUESTION"?<><br /><br /><TextareaAutosize aria-label="minimum height"
+          {props.selectedProduct.resourceType && props.selectedProduct.resourceType === "QUESTION"?<><TextareaAutosize aria-label="minimum height"
             minRows={3}
             placeholder="Minimum 3 rows"
             style={{ width: 200 }} />
-            {inputs.textField.map(()=>{return <><TextField value={text}
-            onChange={(event) => setText(event.target.value)}
+            {inputs.answers.map((el,i)=>{return <><TextField key={i} value={el.value}
+            onChange={(event) => answers(event,i)}
           /><i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer"}} onClick={() => addDynamic()}></i></>})}
-            </>: props.resourceType&&<TextareaAutosize aria-label="minimum height"
-            minRows={3}
-            placeholder="Minimum 3 rows"
-            style={{ width: 200 }} />}
+            </>: ''}
         </Grid>
 
         <Grid item xs={1} align='end' style={{ padding: 20 }}>
-          <Button color='secondary' variant='contained' onClick={() => { if (!text) { return false; } props.formSubmit({ name: text, lessonStatus: lessonStatus,resourceType:resourceType }, props.type) }} disabled={!text}>
+          <Button color='secondary' variant='contained' onClick={() => { if (!text) { return false; } props.formSubmit({ name: text, lessonStatus: lessonStatus,resourceType:resourceType,answers:inputs.answers }, props.selectedProduct.type) }} disabled={!text}>
             Add
           </Button>
         </Grid>

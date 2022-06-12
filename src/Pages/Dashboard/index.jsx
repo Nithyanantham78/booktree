@@ -61,7 +61,7 @@ function Dashboard() {
                           </Box>
                         ):apiStatus==='Pending'?<LoadingSpinner />:'No Data Found'}
                     </Grid>
-                    <AddForm title={'PRODUCT'} formSubmit={submitForm} type={"PRODUCT"} apiStatus={apiStatus} />
+                    <AddForm title={'PRODUCT'} formSubmit={submitForm} type={"PRODUCT"} selectedProduct={{"resourceType":'',"type":''}} apiStatus={apiStatus} />
                 </Grid>
             </Container>
         </Box>
