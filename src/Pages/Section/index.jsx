@@ -28,6 +28,7 @@ function Section() {
             setAuthorReferenceDto(res.data.authorReferenceDto);
             setLessonStatus(res.data.status)
             setApiStatus('success');
+            setSelectedProduct(res.data)
         })
     }, [params.sectionId]);
 
@@ -39,11 +40,13 @@ function Section() {
         setResource('')
         setTitle(typeOfTree[title]);
         setSelectedProduct(data);
+        setText(data.name)
     }
 
     let fetchResource = async (resource) => {
         setApiStatus('Pending');
         setText('');
+        setTitle('RESOURCE')
         setSelectedProduct(resource);
         await axios.get(`api/resource/${resource.urn}`).then((res) => {
             setResource(res.data);
@@ -64,7 +67,7 @@ function Section() {
                 "parentUrn": selectedProduct.urn,
                 "persisted": true,
                 "resourceType":data.resourceType,
-                "type": selectedProduct.type,
+                "type": "RESOURCE",
                 "content": {
                     "field1": data.name
                 }
@@ -107,7 +110,7 @@ function Section() {
             }
             if(data.resourceType === 'QUESTION'){
                 payload["content"] = {};
-                payload["content"]["question"] = data.name;
+                payload["content"]["fleid1"] = data.name;
                 payload["content"]["answers"] = data.answers;
             }
             axios.patch(`${urlConfig['Create']["RESOURCE"]}/${resource.urn}`, payload).then((res) => {
@@ -119,7 +122,9 @@ function Section() {
     }
 
     let changeLessonStatus = (status) => {
-        axios.patch(`http://author-service-lb-341934567.ap-southeast-1.elb.amazonaws.com/api/lesson/status/${status}`).then(()=>{
+        axios.patch(`http://author-service-lb-341934567.ap-southeast-1.elb.amazonaws.com/api/lesson/status/${status}`,{
+            "relatedEntityUrn":params.sectionId
+        }).then(()=>{
             setApiStatus('success');
             setLessonStatus(status);
         })
@@ -132,6 +137,7 @@ function Section() {
                 {authorReferenceDto && <Link to={`/product/${authorReferenceDto.productUrn}`}><Button color='secondary'>Back</Button></Link>}
                 <br />
                 <RenderLessonStatus currentStatus={lessonStatus} changeLessonStatus={changeLessonStatus} />
+                <br/>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
                         {list.length ? (
@@ -165,6 +171,6 @@ function RenderLessonStatus({ currentStatus, changeLessonStatus }) {
             return <><Button color='secondary' onClick={()=>changeLessonStatus('DRAFT')} defaultValue="DRAFT">DRAFT</Button> {currentStatus} <Button color='secondary' onClick={()=>changeLessonStatus('LIVE')} defaultValue="LIVE">LIVE</Button></>
         }
     }else{
-        return <Button color="secondary" disabled="true">DRAFT</Button>
+        return <>{currentStatus} <Button color='secondary' onClick={()=>changeLessonStatus('REVIEW')} defaultValue="REVIEW">REVIEW</Button></>
     }
 }

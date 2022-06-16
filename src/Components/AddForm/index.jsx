@@ -10,47 +10,49 @@ import Button from '@material-ui/core/Button';
 function AddForm(props) {
   const [text, setText] = useState(props.text ? props.text : '');
   const [lessonStatus, setLessonStatus] = useState(1);
-  const [resourceType, setResourceType] = useState('');
+  const [resourceType, setResourceType] = useState('INFO');
   const [textarea, setTextarea] = useState('');
-  const [inputs,setInputs] = useState({answers:[{'value':''}]});
+  const [inputs, setInputs] = useState({ answers: [{ 'value': '' }] });
   useEffect(() => {
     setText(props.text);
-    if(props.selectedProduct.resourceType){
+    if (props.selectedProduct.resourceType) {
       setResourceType(props.selectedProduct.resourceType);
     }
-    if(props.selectedProduct.resourceType === "Question" && props.selectedProduct.content && props.selectedProduct.content.answers){
-        setInputs({answers:[...props.selectedProduct.content.answers]})
-    }
-    return ()=>{
+
+    return () => {
       setText('');
       setLessonStatus(1);
-      setResourceType('');
-      setInputs({answers:[{'value':''}]});
+      setInputs({ answers: [{ 'value': '' }] });
     }
-  }, [props.text]) 
+  }, [props.text])
+
+  useEffect(() => {
+    if (props.selectedProduct.resourceType === "QUESTION" && props.selectedProduct.content && props.selectedProduct.content.answers) {
+      setInputs({ answers: [...props.selectedProduct.content.answers] })
+      setText(props.selectedProduct.name);
+    }
+  },[props.selectedProduct.resourceType])
 
 
-  
-  let addDynamic = (e) =>{
-    inputs.answers.push({'value':''});
-    setInputs({...inputs});
-  } 
-
-  let answers = (e,idx) =>{
-      for(let i=0;i<inputs.answers.length;i++){
-          if(idx == i){
-            inputs.answers[i].value=e.target.value;
-          }
-      }
-      setInputs({...inputs})
+  let addDynamic = (e) => {
+    inputs.answers.push({ 'value': '' });
+    setInputs({ ...inputs });
   }
 
+  let answers = (e, idx) => {
+    for (let i = 0; i < inputs.answers.length; i++) {
+      if (idx == i) {
+        inputs.answers[i].value = e.target.value;
+      }
+    }
+    setInputs({ ...inputs })
+  }
   return <Grid item xs={6}>
     <Box sx={{ minWidth: 120 }} style={{ padding: 20 }}>
       <Grid container alignItems='center'>
         <Grid item xs>
           <Typography gutterBottom variant='h4' component='div'>
-            {props.selectedProduct.type==="RESOURCE"?'Update':'Add'} {props.title}
+            {props.selectedProduct.type === "RESOURCE" ? 'Update' : 'Add'} {props.title}
           </Typography>
         </Grid>
       </Grid>
@@ -59,7 +61,7 @@ function AddForm(props) {
     <Box>
       <Grid container spacing={2} style={{ padding: 20 }}>
         <Grid item xs={8}>
-          {(!props.selectedProduct.resourceType || props.selectedProduct.resourceType !== "QUESTION")&&<TextField value={text}
+          {(!props.selectedProduct.resourceType || props.selectedProduct.resourceType !== "QUESTION") && <TextField value={text}
             onChange={(event) => setText(event.target.value)}
           />}
           {props.selectedProduct.type === "UNIT" && <><br /><br /><select onChange={(e) => { setLessonStatus(e.target.value) }}>
@@ -71,26 +73,28 @@ function AddForm(props) {
           </select></>}
           {props.selectedProduct.type === "SECTION" && <> <br /><br />
             <select onChange={(e) => { setResourceType(e.target.value) }}>
-            <option>INFO</option>
-            <option>CONCEPT</option>
-            <option>MUSIC</option>
-            <option>QUESTION</option>
-            <option>TIMER</option>
-          </select></>}
-         
-          {props.selectedProduct.resourceType && props.selectedProduct.resourceType === "QUESTION"?<><TextareaAutosize aria-label="minimum height"
+              <option>INFO</option>
+              <option>CONCEPT</option>
+              <option>MUSIC</option>
+              <option>QUESTION</option>
+              <option>TIMER</option>
+            </select></>}
+
+          {props.selectedProduct.resourceType && props.selectedProduct.resourceType === "QUESTION" ? <><TextareaAutosize aria-label="minimum height"
             minRows={3}
             placeholder="Minimum 3 rows"
-            style={{ width: 200 }} />
-            {inputs.answers.map((el,i)=>{return <><TextField key={i} value={el.value}
-            onChange={(event) => answers(event,i)}
-          /><i className='fa fa-plus' style={{ marginLeft: 'auto',cursor:"pointer"}} onClick={() => addDynamic()}></i></>})}
-            </>: ''}
+            style={{ width: 200 }} value={props.selectedProduct.name} onChange={(event) => setText(event.target.value)} />
+            {inputs.answers.map((el, i) => {
+              return <><TextField key={i} value={el.value}
+                onChange={(event) => answers(event, i)}
+              /><i className='fa fa-plus' style={{ marginLeft: 'auto', cursor: "pointer" }} onClick={() => addDynamic()}></i></>
+            })}
+          </> : ''}
         </Grid>
 
         <Grid item xs={1} align='end' style={{ padding: 20 }}>
-          <Button color='secondary' variant='contained' onClick={() => { if (!text) { return false; } props.formSubmit({ name: text, lessonStatus: lessonStatus,resourceType:resourceType,answers:inputs.answers }, props.selectedProduct.type) }} disabled={!text}>
-            Add
+          <Button color='secondary' variant='contained' onClick={() => { if (!text && props.selectedProduct.type !== "RESOURCE") { return false; } props.formSubmit({ name: text, lessonStatus: lessonStatus, resourceType: resourceType, answers: inputs.answers }, props.selectedProduct.type) }} disabled={!text && props.selectedProduct.type !== "RESOURCE"}>
+            {props.selectedProduct.type === "RESOURCE" ? 'Update' : 'Add'}
           </Button>
         </Grid>
       </Grid>
