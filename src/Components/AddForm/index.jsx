@@ -19,11 +19,7 @@ function AddForm(props) {
       setResourceType(props.selectedProduct.resourceType);
     }
 
-    return () => {
-      setText('');
-      setLessonStatus(1);
-      setInputs({ answers: [{ 'value': '' }] });
-    }
+   
   }, [props.text])
 
   useEffect(() => {
@@ -31,7 +27,12 @@ function AddForm(props) {
       setInputs({ answers: [...props.selectedProduct.content.answers] })
       setText(props.selectedProduct.name);
     }
-  },[props.selectedProduct.resourceType])
+    return () => {
+      setText('');
+      setLessonStatus(1);
+      setInputs({ answers: [{ 'value': '' }] });
+    }
+  },[props.selectedProduct.urn])
 
 
   let addDynamic = (e) => {
@@ -47,6 +48,7 @@ function AddForm(props) {
     }
     setInputs({ ...inputs })
   }
+  console.log('selectedProduct',props.selectedProduct)
   return <Grid item xs={6}>
     <Box sx={{ minWidth: 120 }} style={{ padding: 20 }}>
       <Grid container alignItems='center'>

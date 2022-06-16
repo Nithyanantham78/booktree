@@ -60,6 +60,8 @@ function Section() {
 
     let submitForm = async (data, type) => {
         setApiStatus('Pending');
+        // console.log(data,type);
+        // return false;
         if (type === "SECTION") {
             let payload = {
                 "name": data.name,
@@ -95,12 +97,13 @@ function Section() {
             })
 
             if (res) {
-                axios.get(`api/lesson/${params.lessonId}`).then((res) => {
+                axios.get(`api/lesson/${params.sectionId}`).then((res) => {
                     setList(res.data.childNodes);
                     setApiStatus('success');
                 })
             }
         } else {
+            setList([]);
             let payload = {
                 "urn": resource.urn,
                 "persisted": true,
@@ -110,14 +113,20 @@ function Section() {
             }
             if(data.resourceType === 'QUESTION'){
                 payload["content"] = {};
-                payload["content"]["fleid1"] = data.name;
+                payload["content"]["field1"] = data.name;
                 payload["content"]["answers"] = data.answers;
             }
             axios.patch(`${urlConfig['Create']["RESOURCE"]}/${resource.urn}`, payload).then((res) => {
                 setApiStatus('success');
+                axios.get(`api/lesson/${params.sectionId}`).then((res) => {
+                    setList(res.data.childNodes);
+                    setApiStatus('success');
+                })
             }).catch(() => {
                 setApiStatus('Failed')
             })
+            
+
         }
     }
 
@@ -137,7 +146,6 @@ function Section() {
                 {authorReferenceDto && <Link to={`/product/${authorReferenceDto.productUrn}`}><Button color='secondary'>Back</Button></Link>}
                 <br />
                 <RenderLessonStatus currentStatus={lessonStatus} changeLessonStatus={changeLessonStatus} />
-                <br/>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
                         {list.length ? (
